@@ -32,15 +32,11 @@ public class Auction extends TimeStamped {
     @Builder
     public Auction(
         Integer startPrice,
-        Integer currentPrice,
-        Integer bidCount,
         Product product,
         AuctionDuration duration
     )
     {
         this.startPrice = startPrice;
-        this.currentPrice = currentPrice;
-        this.bidCount = bidCount;
         this.product = product;
         this.endAt = LocalDateTime.now().plusDays(duration.getDays());
     }

@@ -11,9 +11,7 @@ import static org.springframework.http.HttpStatus.*;
 public enum ErrorCode {
 
     // 굿즈
-    MERCH_NOT_FOUND("해당 굿즈를 찾을 수 없습니다.", NOT_FOUND),
-    CANNOT_BUY_MORE_QUANTITY("굿즈의 수량을 넘겨 구입할 수 없습니다.", BAD_REQUEST),
-    ADMIN_NOT_REGISTERED_MERCH("해당 굿즈는 해당 어드민이 등록한 굿즈가 아닙니다.", CONFLICT),
+    PRODUCT_NOT_FOUND("해당 상품를 찾을 수 없습니다.", NOT_FOUND),
 
     // 유저
     USER_NOT_FOUND("해당 사람을 찾을 수 없습니다.", NOT_FOUND),

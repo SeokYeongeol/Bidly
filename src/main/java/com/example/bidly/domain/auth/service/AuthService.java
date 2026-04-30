@@ -8,7 +8,7 @@ import com.example.bidly.domain.member.repository.MemberRepository;
 import com.example.bidly.domain.member.role.MemberRole;
 import com.example.bidly.global.exception.ServerException;
 import com.example.bidly.global.util.JwtUtil;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

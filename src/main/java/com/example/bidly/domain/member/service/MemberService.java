@@ -6,10 +6,10 @@ import com.example.bidly.domain.member.entity.Member;
 import com.example.bidly.domain.member.repository.MemberRepository;
 import com.example.bidly.global.entity.Auth;
 import com.example.bidly.global.exception.ServerException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.example.bidly.global.exception.ErrorCode.*;
 

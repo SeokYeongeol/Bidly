@@ -9,9 +9,12 @@ import static org.springframework.http.HttpStatus.*;
 @Getter
 @RequiredArgsConstructor
 public enum ErrorCode {
+    // 경매
+    AUCTION_NOT_FOUND("해당 경매를 찾을 수 없습니다.", NOT_FOUND),
 
-    // 굿즈
+    // 상품
     PRODUCT_NOT_FOUND("해당 상품를 찾을 수 없습니다.", NOT_FOUND),
+    PRODUCT_SOLD_OUT("해당 상품은 품절입니다.", NOT_FOUND),
 
     // 유저
     USER_NOT_FOUND("해당 사람을 찾을 수 없습니다.", NOT_FOUND),

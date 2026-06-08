@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.example.bidly.domain.product.enums.ProductStatus.ON_SALE;
@@ -28,12 +29,12 @@ public class AuctionService {
     private final AuctionRepository auctionRepository;
     private final ProductRepository productRepository;
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void createAuction(CreateAuctionRequest request) {
         Product findProduct = productRepository.findById(request.getProductId())
                 .orElseThrow(() -> new ServerException(PRODUCT_NOT_FOUND));
 
-        Auction savedAuction = new Auction(request.getStartPrice(), findProduct, request.getDuration());
+        Auction savedAuction = new Auction(request.getStartPrice(), findProduct, 0, 0, request.getDuration());
         auctionRepository.save(savedAuction);
     }
 

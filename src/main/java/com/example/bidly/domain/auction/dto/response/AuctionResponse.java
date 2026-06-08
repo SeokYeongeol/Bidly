@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @Builder
 public class AuctionResponse {
     private final Long id;
+    private final Long sellerId;
     private final String productName;
     private final String productDescription;
     private final Integer startPrice;
@@ -20,6 +21,7 @@ public class AuctionResponse {
     public static AuctionResponse of(Auction auction) {
         return AuctionResponse.builder()
                 .id(auction.getId())
+                .sellerId(auction.getProduct().getSeller().getId())
                 .productName(auction.getProduct().getTitle())
                 .productDescription(auction.getProduct().getDescription())
                 .startPrice(auction.getStartPrice())

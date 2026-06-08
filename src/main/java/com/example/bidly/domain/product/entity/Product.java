@@ -1,6 +1,5 @@
 package com.example.bidly.domain.product.entity;
 
-import com.example.bidly.domain.auction.entity.Auction;
 import com.example.bidly.domain.member.entity.Member;
 import com.example.bidly.domain.product.enums.ProductCategory;
 import com.example.bidly.domain.product.enums.ProductStatus;
@@ -45,10 +44,6 @@ public class Product extends TimeStamped {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id", nullable = false)
     private Member seller;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "auction_id")
-    private Auction auction;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("displayOrder ASC")

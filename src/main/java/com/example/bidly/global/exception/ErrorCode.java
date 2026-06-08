@@ -9,6 +9,9 @@ import static org.springframework.http.HttpStatus.*;
 @Getter
 @RequiredArgsConstructor
 public enum ErrorCode {
+    // 입찰
+
+
     // 경매
     AUCTION_NOT_FOUND("해당 경매를 찾을 수 없습니다.", NOT_FOUND),
 

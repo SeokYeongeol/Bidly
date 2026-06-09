@@ -44,4 +44,8 @@ public class Auction extends TimeStamped {
         this.currentPrice = currentPrice;
         this.endAt = LocalDateTime.now().plusDays(duration.getDays());
     }
+
+    public void changeCurrentPrice(Integer currentPrice) { this.currentPrice = currentPrice; }
+
+    public void plusBidCount() { this.bidCount++; }
 }

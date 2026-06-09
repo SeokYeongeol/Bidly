@@ -8,10 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -20,11 +17,12 @@ public class BidController {
 
     private final BidService bidService;
 
-    @PostMapping("/v1/bids")
+    @PostMapping("/v1/auctions/{auctionId}/bids")
     public ResponseEntity<BidResponse> createBid(
-        @AuthenticationPrincipal Auth auth,
-        @Valid @RequestBody CreateBidRequest request
+            @AuthenticationPrincipal Auth auth,
+            @PathVariable Long auctionId,
+            @Valid @RequestBody CreateBidRequest request
     ) {
-        return ResponseEntity.ok(bidService.createBid(auth, request));
+        return ResponseEntity.ok(bidService.createBid(auth, auctionId, request));
     }
 }

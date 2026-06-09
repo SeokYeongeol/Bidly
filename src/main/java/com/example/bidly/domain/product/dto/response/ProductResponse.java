@@ -19,6 +19,7 @@ public class ProductResponse {
     private final Long sellerId;
     private final String title;
     private final String description;
+    private final Integer price;
     private final ProductCategory category;
     private final ProductStatus status;
     private final TradeType type;
@@ -31,6 +32,7 @@ public class ProductResponse {
                 .sellerId(product.getSeller().getId())
                 .title(product.getTitle())
                 .description(product.getDescription())
+                .price(product.getPrice())
                 .category(product.getCategory())
                 .status(product.getStatus())
                 .type(product.getType())

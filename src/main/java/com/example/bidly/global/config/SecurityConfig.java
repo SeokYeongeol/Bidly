@@ -2,6 +2,8 @@ package com.example.bidly.global.config;
 
 import com.example.bidly.domain.member.role.MemberRole;
 import com.example.bidly.global.filter.JwtAuthenticationFilter;
+import com.example.bidly.global.oauth2.handler.OAuth2SuccessHandler;
+import com.example.bidly.global.oauth2.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +25,8 @@ import org.springframework.security.web.servletapi.SecurityContextHolderAwareReq
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter authenticationFilter;
+    private final CustomOAuth2UserService oAuth2UserService;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder(); }
@@ -39,10 +43,15 @@ public class SecurityConfig {
                 .rememberMe(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers("/oauth2/**", "/login/**").permitAll()
                         .requestMatchers("/api/v1/admin/**").hasAuthority(MemberRole.Authority.ADMIN)
                         .requestMatchers(HttpMethod.GET).permitAll()
                         .requestMatchers("/api/v1/admin/auth/**").permitAll()
                         .anyRequest().authenticated()
+                )
+                .oauth2Login(oauth -> oauth
+                        .userInfoEndpoint(u -> u.userService(oAuth2UserService))
+                        .successHandler(oAuth2SuccessHandler)
                 );
         return http.build();
     }

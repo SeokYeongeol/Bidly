@@ -9,6 +9,9 @@ import static org.springframework.http.HttpStatus.*;
 @Getter
 @RequiredArgsConstructor
 public enum ErrorCode {
+    // 포인트
+    INSUFFICIENT_POINT("포인트가 충분하지 않습니다.", BAD_REQUEST),
+
     // 입찰
     BID_PRICE_LOWER_START_PRICE("시작 금액보다 입찰가가 낮습니다.", BAD_REQUEST),
     BID_PRICE_LOWER_CURRENT_PRICE("현재 금액보다 입찰가가 낮습니다.", BAD_REQUEST),

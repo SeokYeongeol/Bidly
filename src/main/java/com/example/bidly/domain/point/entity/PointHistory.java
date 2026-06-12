@@ -1,0 +1,36 @@
+package com.example.bidly.domain.point.entity;
+
+import com.example.bidly.domain.point.enums.PointType;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+public class PointHistory {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private Integer amount;
+    private String description;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "point_id")
+    private Point point;
+
+    @Enumerated(EnumType.STRING)
+    private PointType type;
+
+    @Builder
+    public PointHistory(Integer amount, String description, Point point, PointType type) {
+        this.amount = amount;
+        this.description = description;
+        this.point = point;
+        this.type = type;
+    }
+}

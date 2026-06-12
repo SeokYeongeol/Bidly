@@ -62,6 +62,9 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // 낙관적 락
+    implementation 'org.springframework.retry:spring-retry'
 }
 
 tasks.named('test') {

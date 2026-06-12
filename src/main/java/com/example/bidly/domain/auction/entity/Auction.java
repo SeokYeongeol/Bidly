@@ -29,6 +29,9 @@ public class Auction extends TimeStamped {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
+    @Version
+    private Long version;
+
     @Builder
     public Auction(
         Integer startPrice,

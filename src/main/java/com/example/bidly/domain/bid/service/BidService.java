@@ -44,8 +44,8 @@ public class BidService {
         if (request.getBidPrice() <= findAuction.getCurrentPrice()) {
             throw new ServerException(BID_PRICE_LOWER_CURRENT_PRICE);
         }
-        if (request.getBidPrice() % 10000 != 0) {
-            throw new ServerException(BID_PRICE_DIVIDE_TEN_THOUSAND);
+        if (request.getBidPrice() % 1000 != 0) {
+            throw new ServerException(BID_PRICE_DIVIDE_THOUSAND);
         }
         if (findAuction.getProduct().getSeller().getId().equals(findMember.getId())) {
             throw new ServerException(SELLER_BIDDER_DUPLICATED);

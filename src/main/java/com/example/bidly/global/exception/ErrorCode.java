@@ -9,13 +9,16 @@ import static org.springframework.http.HttpStatus.*;
 @Getter
 @RequiredArgsConstructor
 public enum ErrorCode {
+    // S3
+    S3_UPLOAD_FAILED("사진 업로드에 실패했습니다.", CONFLICT),
+
     // 포인트
     INSUFFICIENT_POINT("포인트가 충분하지 않습니다.", BAD_REQUEST),
 
     // 입찰
     BID_PRICE_LOWER_START_PRICE("시작 금액보다 입찰가가 낮습니다.", BAD_REQUEST),
     BID_PRICE_LOWER_CURRENT_PRICE("현재 금액보다 입찰가가 낮습니다.", BAD_REQUEST),
-    BID_PRICE_DIVIDE_TEN_THOUSAND("10000원 단위로 입찰해야 합니다.", BAD_REQUEST),
+    BID_PRICE_DIVIDE_THOUSAND("1000원 단위로 입찰해야 합니다.", BAD_REQUEST),
     SELLER_BIDDER_DUPLICATED("자기 자신의 물건을 입찰할 수 없습니다.", CONFLICT),
 
     // 경매

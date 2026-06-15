@@ -7,9 +7,13 @@ import com.example.bidly.global.entity.Auth;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.web.PagedModel;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -18,12 +22,13 @@ public class ProductController {
 
     private final ProductService productService;
 
-    @PostMapping("/v1/products")
+    @PostMapping(value = "/v1/products", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ProductResponse> createProduct(
-        @AuthenticationPrincipal Auth auth,
-        @Valid @RequestBody CreateProductRequest request
+            @AuthenticationPrincipal Auth auth,
+            @Valid @RequestPart CreateProductRequest request,
+            @RequestPart(required = false)List<MultipartFile> images
     ) {
-        return ResponseEntity.ok(productService.createProduct(auth, request));
+        return ResponseEntity.ok(productService.createProduct(auth, request, images));
     }
 
     @GetMapping("/v1/products/{productId}")

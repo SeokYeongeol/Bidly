@@ -63,7 +63,7 @@ public class ProductService {
         productRepository.save(savedProduct);
 
         for (int i = 0; i < images.size(); i++) {
-            String imageUrl = s3Service.upload(images.get(i), "products");
+            String imageUrl = s3Service.upload(images.get(i), "products", savedProduct.getId());
             ProductImage savedProductImage = ProductImage.builder()
                     .imageUrl(imageUrl)
                     .displayOrder(i + 1)

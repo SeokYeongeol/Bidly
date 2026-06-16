@@ -1,6 +1,7 @@
 package com.example.bidly.domain.point.entity;
 
 import com.example.bidly.domain.point.enums.PointType;
+import com.example.bidly.global.entity.TimeStamped;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -10,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class PointHistory {
+public class PointHistory extends TimeStamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

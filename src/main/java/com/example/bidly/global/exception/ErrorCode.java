@@ -9,8 +9,14 @@ import static org.springframework.http.HttpStatus.*;
 @Getter
 @RequiredArgsConstructor
 public enum ErrorCode {
-    // S3
-    S3_UPLOAD_FAILED("사진 업로드에 실패했습니다.", CONFLICT),
+    // 결제
+    ALREADY_PAYMENT_SUCCESS("이미 결제가 완료됐습니다.", CONFLICT),
+    ALREADY_PAYMENT_FAILED("이미 결제에 실패했습니다.", CONFLICT),
+    PAYMENT_NOT_SUCCESS("아직 결제가 완료되지 않았습니다.", CONFLICT),
+    PAYMENT_VALID_ERROR("결제 검증중 오류가 발생했습니다.", INTERNAL_SERVER_ERROR),
+
+    // 이미지
+    S3_UPLOAD_FAILED("사진 업로드에 실패했습니다.", INTERNAL_SERVER_ERROR),
 
     // 포인트
     INSUFFICIENT_POINT("포인트가 충분하지 않습니다.", BAD_REQUEST),

@@ -55,3 +55,8 @@ jwt:
     key: ${JWT_SECRET_KEY}
   access:
     token: ${JWT_ACCESS_TOKEN}
+
+import:
+  api:
+    key: ${IMPORT_API_KEY}
+    secret: ${IMPORT_API_SECRET}

@@ -44,8 +44,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/oauth2/**", "/login/**").permitAll()
+                        .requestMatchers("/ws-stomp/**").permitAll()
                         .requestMatchers("/api/v1/admin/**").hasAuthority(MemberRole.Authority.ADMIN)
-                        .requestMatchers(HttpMethod.GET).permitAll()
                         .requestMatchers("/api/v1/admin/auth/**").permitAll()
                         .anyRequest().authenticated()
                 )

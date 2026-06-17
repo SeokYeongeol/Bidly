@@ -54,8 +54,6 @@ public class Member extends TimeStamped {
 
     public void changePassword(String password) { this.password = password; }
     public void deleteMember() { this.deletedAt = LocalDateTime.now(); }
-    private Member(Long id) { this.id = id; }
-    public static Member fromAuth(Long authId) { return new Member(authId); }
     public Member updateName(String name) {
         this.name = name;
         return this;

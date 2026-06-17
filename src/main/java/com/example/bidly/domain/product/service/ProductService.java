@@ -1,6 +1,7 @@
 package com.example.bidly.domain.product.service;
 
 import com.example.bidly.domain.member.entity.Member;
+import com.example.bidly.domain.member.repository.MemberRepository;
 import com.example.bidly.domain.product.dto.request.CreateProductRequest;
 import com.example.bidly.domain.product.dto.response.ProductResponse;
 import com.example.bidly.domain.product.entity.Product;
@@ -39,10 +40,12 @@ public class ProductService {
     private final ApplicationEventPublisher eventPublisher;
     private final ProductImageRepository productImageRepository;
     private final S3Service s3Service;
+    private final MemberRepository memberRepository;
 
     @Transactional
     public ProductResponse createProduct(Auth auth, CreateProductRequest request, List<MultipartFile> images) {
-        Member findMember = Member.fromAuth(auth.getId());
+        Member findMember = memberRepository.findMemberById(auth.getId())
+                .orElseThrow(() -> new ServerException(USER_NOT_FOUND));
         if (request.getTradeType().equals(DIRECT)) {
             if (request.getPrice() == null) throw new ServerException(INPUT_PRICE);
         }

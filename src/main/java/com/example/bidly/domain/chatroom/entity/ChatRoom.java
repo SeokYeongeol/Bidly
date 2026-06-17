@@ -4,6 +4,7 @@ import com.example.bidly.domain.member.entity.Member;
 import com.example.bidly.domain.product.entity.Product;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -27,4 +28,15 @@ public class ChatRoom {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id", nullable = false)
     private Member seller;
+
+    @Builder
+    public ChatRoom(Product product, Member buyer, Member seller) {
+        this.product = product;
+        this.buyer = buyer;
+        this.seller = seller;
+    }
+
+    public boolean isParticipant(Long memberId) {
+        return buyer.getId().equals(memberId) || seller.getId().equals(memberId);
+    }
 }

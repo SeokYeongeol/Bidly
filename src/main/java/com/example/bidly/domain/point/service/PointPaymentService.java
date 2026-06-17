@@ -35,7 +35,7 @@ public class PointPaymentService {
 
     @Transactional
     public ChargePointResponse portOnePayment(Auth auth, ChargePointRequest request) {
-        Member findMember = memberRepository.findById(auth.getId())
+        Member findMember = memberRepository.findMemberById(auth.getId())
                 .orElseThrow(() -> new ServerException(USER_NOT_FOUND));
 
         pointPaymentRepository.findByPaymentId(request.getPaymentId())

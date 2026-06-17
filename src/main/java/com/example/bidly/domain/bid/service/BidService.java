@@ -7,6 +7,7 @@ import com.example.bidly.domain.bid.dto.response.BidResponse;
 import com.example.bidly.domain.bid.entity.Bid;
 import com.example.bidly.domain.bid.repository.BidRepository;
 import com.example.bidly.domain.member.entity.Member;
+import com.example.bidly.domain.member.repository.MemberRepository;
 import com.example.bidly.domain.point.entity.Point;
 import com.example.bidly.domain.point.entity.PointHistory;
 import com.example.bidly.domain.point.enums.PointType;
@@ -30,13 +31,15 @@ public class BidService {
     private final AuctionRepository auctionRepository;
     private final PointRepository pointRepository;
     private final PointHistoryRepository pointHistoryRepository;
+    private final MemberRepository memberRepository;
 
     @Retryable(retryFor = OptimisticLockingFailureException.class)
     @Transactional
     public BidResponse createBid(Auth auth, Long auctionId, CreateBidRequest request) {
         Auction findAuction = auctionRepository.findById(auctionId)
                 .orElseThrow(() -> new ServerException(AUCTION_NOT_FOUND));
-        Member findMember = Member.fromAuth(auth.getId());
+        Member findMember = memberRepository.findMemberById(auth.getId())
+                .orElseThrow(() -> new ServerException(USER_NOT_FOUND));
 
         if (request.getBidPrice() < findAuction.getStartPrice()) {
             throw new ServerException(BID_PRICE_LOWER_START_PRICE);

@@ -9,6 +9,11 @@ import static org.springframework.http.HttpStatus.*;
 @Getter
 @RequiredArgsConstructor
 public enum ErrorCode {
+    // 채팅
+    CANNOT_CHAT_WITH_SELF("채팅 대상이 자기 자신일 수 없습니다.", BAD_REQUEST),
+    CHAT_ROOM_NOT_FOUND("해당 채팅방을 찾을 수 없습니다.", NOT_FOUND),
+    NOT_CHAT_PARTICIPANT("채팅 참여자가 없습니다.", BAD_REQUEST),
+
     // 결제
     ALREADY_PAYMENT_SUCCESS("이미 결제가 완료됐습니다.", CONFLICT),
     ALREADY_PAYMENT_FAILED("이미 결제에 실패했습니다.", CONFLICT),

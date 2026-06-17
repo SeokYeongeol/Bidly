@@ -7,5 +7,5 @@ import lombok.Getter;
 public class ExchangePointRequest {
 
     @NotNull(message = "포인트를 입력해주세요.")
-    private Integer point;
+    private Long point;
 }

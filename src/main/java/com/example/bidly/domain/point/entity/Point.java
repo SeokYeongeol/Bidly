@@ -20,23 +20,23 @@ public class Point extends TimeStamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer point;
+    private Long point;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
     @Builder
-    public Point(Integer point, Member member) {
+    public Point(Long point, Member member) {
         this.point = point;
         this.member = member;
     }
 
-    public void chargePoint(Integer point) {
+    public void chargePoint(Long point) {
         this.point += point;
     }
 
-    public void usePoint(Integer point) {
+    public void usePoint(Long point) {
         if (this.point < point) {
             throw new ServerException(INSUFFICIENT_POINT);
         }

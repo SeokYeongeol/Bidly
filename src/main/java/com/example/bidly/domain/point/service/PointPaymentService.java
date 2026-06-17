@@ -1,6 +1,10 @@
 package com.example.bidly.domain.point.service;
 
 import com.example.bidly.domain.member.entity.Member;
+import com.example.bidly.domain.member.repository.MemberRepository;
+import com.example.bidly.domain.point.dto.request.ChargePointRequest;
+import com.example.bidly.domain.point.dto.response.ChargePointResponse;
+import com.example.bidly.domain.point.dto.response.PortOnePaymentResponse;
 import com.example.bidly.domain.point.entity.Point;
 import com.example.bidly.domain.point.entity.PointHistory;
 import com.example.bidly.domain.point.entity.PointPayment;
@@ -11,11 +15,10 @@ import com.example.bidly.domain.point.repository.PointPaymentRepository;
 import com.example.bidly.domain.point.repository.PointRepository;
 import com.example.bidly.global.entity.Auth;
 import com.example.bidly.global.exception.ServerException;
-import com.siot.IamportRestClient.IamportClient;
-import com.siot.IamportRestClient.response.IamportResponse;
-import com.siot.IamportRestClient.response.Payment;
+import com.example.bidly.global.service.PortOneService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.example.bidly.global.exception.ErrorCode.*;
@@ -25,63 +28,85 @@ import static com.example.bidly.global.exception.ErrorCode.*;
 public class PointPaymentService {
 
     private final PointPaymentRepository pointPaymentRepository;
-    private final IamportClient iamportClient;
     private final PointHistoryRepository pointHistoryRepository;
     private final PointRepository pointRepository;
+    private final PortOneService portOneService;
+    private final MemberRepository memberRepository;
 
     @Transactional
-    public IamportResponse<Payment> iamportPayment(Auth auth, String imp_uid) {
-        // 결제 테이블에 해당 imp_uid 가 있는지 확인 (있는 상태일 때 해당 status 가 SUCCESS, FAILED 이면 예외)
-        pointPaymentRepository.findByImpUid(imp_uid)
+    public ChargePointResponse portOnePayment(Auth auth, ChargePointRequest request) {
+        Member findMember = memberRepository.findById(auth.getId())
+                .orElseThrow(() -> new ServerException(USER_NOT_FOUND));
+
+        pointPaymentRepository.findByPaymentId(request.getPaymentId())
                 .ifPresent(exists -> {
-                    if (exists.getPaymentStatus().equals(PaymentStatus.SUCCESS)) {
-                        throw new ServerException(ALREADY_PAYMENT_SUCCESS);
-                    }
-                    if (exists.getPaymentStatus().equals(PaymentStatus.FAILED)) {
+                    if (exists.getPaymentStatus() == PaymentStatus.FAILED) {
                         throw new ServerException(ALREADY_PAYMENT_FAILED);
                     }
+                    if (exists.getPaymentStatus() == PaymentStatus.SUCCESS) {
+                        throw new ServerException(ALREADY_PAYMENT_SUCCESS);
+                    }
                 });
+        PointPayment pointPayment = savePending(findMember, request.getPaymentId());
 
-        // 우선 imp_uid 에 unique 제약조건이 걸려있기 때문에 PENDING 상태로 우선 저장과 flush
-        Member findMember = Member.fromAuth(auth.getId());
-        PointPayment pointPayment = PointPayment.builder()
-                .impUid(imp_uid)
-                .member(findMember)
-                .amount(null)
-                .paymentStatus(PaymentStatus.PENDING)
-                .build();
-        pointPaymentRepository.saveAndFlush(pointPayment);
-
-        // 결제 수행
         try {
-            IamportResponse<Payment> response = iamportClient.paymentByImpUid(imp_uid);
-            Payment payment = response.getResponse();
+            PortOnePaymentResponse payment = portOneService.getPayment(request.getPaymentId());
 
-            int price = payment.getAmount().intValue();
-            String status = payment.getStatus();
-
-            if (!status.equals("paid")) {
-                pointPayment.changeStatus(PaymentStatus.FAILED);
+            if (!"PAID".equals(payment.getStatus())) {
+                markFailed(pointPayment.getId());
                 throw new ServerException(PAYMENT_NOT_SUCCESS);
             }
-            pointPayment.changeStatus(PaymentStatus.SUCCESS);
+            Long amount = payment.getAmount().getTotal();
 
-            Point findPoint = pointRepository.findPointsByMemberId(findMember.getId())
-                    .orElseThrow(() -> new ServerException(USER_NOT_FOUND));
-
-            PointHistory savedPointHistory = PointHistory.builder()
-                    .amount(price)
-                    .type(PointType.CHARGE)
-                    .description("포인트 충전")
-                    .point(findPoint)
-                    .build();
-            pointHistoryRepository.save(savedPointHistory);
-
-            return response;
+            return markSuccessAndCharge(pointPayment.getId(), findMember.getId(), amount);
+        } catch (ServerException se) {
+            throw se;
         } catch (Exception e) {
-            pointPayment.changeStatus(PaymentStatus.FAILED);
-            pointPaymentRepository.save(pointPayment);
+            markFailed(pointPayment.getId());
             throw new ServerException(PAYMENT_VALID_ERROR);
         }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public PointPayment savePending(Member member, String paymentId) {
+        PointPayment payment = PointPayment.builder()
+                .paymentId(paymentId)
+                .member(member)
+                .paymentStatus(PaymentStatus.PENDING)
+                .build();
+        return pointPaymentRepository.save(payment);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void markFailed(Long paymentId) {
+        PointPayment pointPayment = pointPaymentRepository.findById(paymentId)
+                .orElseThrow();
+        pointPayment.changeStatus(PaymentStatus.FAILED);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public ChargePointResponse markSuccessAndCharge(Long paymentId, Long memberId, Long amount) {
+        PointPayment pointPayment = pointPaymentRepository.findById(paymentId)
+                .orElseThrow();
+        pointPayment.changeStatus(PaymentStatus.SUCCESS);
+        pointPayment.changeAmount(amount);
+
+        Point point = pointRepository.findPointsByMemberId(memberId)
+                .orElseThrow(() -> new ServerException(USER_NOT_FOUND));
+        point.chargePoint(amount);
+
+        PointHistory savedPointHistory = PointHistory.builder()
+                .amount(amount)
+                .point(point)
+                .description("포인트 충전")
+                .type(PointType.CHARGE)
+                .build();
+        pointHistoryRepository.save(savedPointHistory);
+
+        return ChargePointResponse.builder()
+                .currentBalance(point.getPoint())
+                .chargedAmount(amount)
+                .status(PaymentStatus.SUCCESS)
+                .build();
     }
 }

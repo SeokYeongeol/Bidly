@@ -7,5 +7,5 @@ import lombok.Getter;
 public class CreateBidRequest {
 
     @NotNull(message = "가격을 입력해주세요.")
-    private Integer bidPrice;
+    private Long bidPrice;
 }

@@ -10,7 +10,7 @@ import lombok.Getter;
 public class CreateAuctionRequest {
 
     private Long productId;
-    private Integer startPrice;
+    private Long startPrice;
     private AuctionDuration duration;
 
     public static CreateAuctionRequest from(ProductCreatedEvent event) {

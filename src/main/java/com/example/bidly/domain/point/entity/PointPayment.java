@@ -18,9 +18,9 @@ public class PointPayment {
     private Long id;
 
     @Column(unique = true, nullable = false)
-    private String impUid;
+    private String paymentId;
 
-    private Integer amount;
+    private Long amount;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -30,8 +30,8 @@ public class PointPayment {
     private PaymentStatus paymentStatus;
 
     @Builder
-    public PointPayment(String impUid, Integer amount, Member member, PaymentStatus paymentStatus) {
-        this.impUid = impUid;
+    public PointPayment(String paymentId, Long amount, Member member, PaymentStatus paymentStatus) {
+        this.paymentId = paymentId;
         this.amount = amount;
         this.member = member;
         this.paymentStatus = paymentStatus;
@@ -39,5 +39,9 @@ public class PointPayment {
 
     public void changeStatus(PaymentStatus paymentStatus) {
         this.paymentStatus = paymentStatus;
+    }
+
+    public void changeAmount(Long amount) {
+        this.amount = amount;
     }
 }

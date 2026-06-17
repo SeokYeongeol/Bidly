@@ -16,9 +16,6 @@ java {
 
 repositories {
     mavenCentral()
-
-    // 결제 (IamPort)
-    maven {url 'https://jitpack.io'}
 }
 
 dependencies {
@@ -68,9 +65,6 @@ dependencies {
 
     // 낙관적 락
     implementation 'org.springframework.retry:spring-retry'
-
-    // 결제 (IamPort)
-    implementation 'com.github.iamport:iamport-rest-client-java:0.1.6'
 }
 
 tasks.named('test') {

@@ -19,7 +19,7 @@ public class ProductResponse {
     private final Long sellerId;
     private final String title;
     private final String description;
-    private final Integer price;
+    private final Long price;
     private final ProductCategory category;
     private final ProductStatus status;
     private final TradeType type;

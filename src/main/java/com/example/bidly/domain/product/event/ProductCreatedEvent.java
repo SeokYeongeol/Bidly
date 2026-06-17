@@ -10,6 +10,6 @@ import lombok.RequiredArgsConstructor;
 public class ProductCreatedEvent {
 
     private final Product product;
-    private final Integer startPrice;
+    private final Long startPrice;
     private final AuctionDuration duration;
 }

@@ -20,8 +20,8 @@ public class Auction extends TimeStamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer startPrice;
-    private Integer currentPrice;
+    private Long startPrice;
+    private Long currentPrice;
     private Integer bidCount;
     private LocalDateTime endAt;
 
@@ -34,10 +34,10 @@ public class Auction extends TimeStamped {
 
     @Builder
     public Auction(
-        Integer startPrice,
+        Long startPrice,
         Product product,
         Integer bidCount,
-        Integer currentPrice,
+        Long currentPrice,
         AuctionDuration duration
     )
     {
@@ -48,7 +48,7 @@ public class Auction extends TimeStamped {
         this.endAt = LocalDateTime.now().plusDays(duration.getDays());
     }
 
-    public void changeCurrentPrice(Integer currentPrice) { this.currentPrice = currentPrice; }
+    public void changeCurrentPrice(Long currentPrice) { this.currentPrice = currentPrice; }
 
     public void plusBidCount() { this.bidCount++; }
 }

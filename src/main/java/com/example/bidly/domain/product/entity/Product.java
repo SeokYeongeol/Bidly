@@ -27,7 +27,7 @@ public class Product extends TimeStamped {
     @Column(length = 30)
     private String title;
     private String description;
-    private Integer price;
+    private Long price;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -53,7 +53,7 @@ public class Product extends TimeStamped {
     public Product(
         String title,
         String description,
-        Integer price,
+        Long price,
         ProductCategory category,
         ProductStatus status,
         TradeType type,

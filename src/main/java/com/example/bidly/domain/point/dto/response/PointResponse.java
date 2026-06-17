@@ -10,7 +10,7 @@ public class PointResponse {
 
     private final Long id;
     private final Long memberId;
-    private final Integer point;
+    private final Long point;
 
     public static PointResponse of(Point point) {
         return PointResponse.builder()

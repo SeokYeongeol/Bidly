@@ -56,7 +56,6 @@ jwt:
   access:
     token: ${JWT_ACCESS_TOKEN}
 
-import:
+portone:
   api:
-    key: ${IMPORT_API_KEY}
-    secret: ${IMPORT_API_SECRET}
+    secret: ${PORTONE_API_SECRET}

@@ -1,16 +1,13 @@
 package com.example.bidly.domain.point.controller;
 
+import com.example.bidly.domain.point.dto.request.ChargePointRequest;
+import com.example.bidly.domain.point.dto.response.ChargePointResponse;
 import com.example.bidly.domain.point.service.PointPaymentService;
 import com.example.bidly.global.entity.Auth;
-import com.siot.IamportRestClient.response.IamportResponse;
-import com.siot.IamportRestClient.response.Payment;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -19,11 +16,11 @@ public class PointPaymentController {
 
     private final PointPaymentService pointPaymentService;
 
-    @PostMapping("/v1/payments/{imp_uid}")
-    public ResponseEntity<IamportResponse<Payment>> iamportPayment(
+    @PostMapping("/v1/points/charge")
+    public ResponseEntity<ChargePointResponse> portOnePayment(
             @AuthenticationPrincipal Auth auth,
-            @PathVariable String imp_uid
+            @RequestBody ChargePointRequest request
     ) {
-        return ResponseEntity.ok(pointPaymentService.iamportPayment(auth, imp_uid));
+        return ResponseEntity.ok(pointPaymentService.portOnePayment(auth, request));
     }
 }

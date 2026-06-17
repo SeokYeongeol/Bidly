@@ -10,7 +10,7 @@ public class BidResponse {
 
     private Long id;
     private Long bidderId;
-    private Integer bidPrice;
+    private Long bidPrice;
     private Long auctionId;
 
     public static BidResponse of(Bid bid) {

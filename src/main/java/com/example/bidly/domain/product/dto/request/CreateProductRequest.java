@@ -22,9 +22,9 @@ public class CreateProductRequest {
     private TradeType tradeType;
 
     // 즉시 구매일 경우
-    private Integer price;
+    private Long price;
 
     // 경매일 경우
-    private Integer startPrice;
+    private Long startPrice;
     private AuctionDuration duration;
 }

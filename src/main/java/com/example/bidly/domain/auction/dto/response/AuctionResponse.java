@@ -13,8 +13,8 @@ public class AuctionResponse {
     private final Long sellerId;
     private final String productName;
     private final String productDescription;
-    private final Integer startPrice;
-    private final Integer currentPrice;
+    private final Long startPrice;
+    private final Long currentPrice;
     private final Integer bidCount;
     private final LocalDateTime endAt;
 

@@ -17,7 +17,7 @@ public class PointHistory extends TimeStamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer amount;
+    private Long amount;
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -28,7 +28,7 @@ public class PointHistory extends TimeStamped {
     private PointType type;
 
     @Builder
-    public PointHistory(Integer amount, String description, Point point, PointType type) {
+    public PointHistory(Long amount, String description, Point point, PointType type) {
         this.amount = amount;
         this.description = description;
         this.point = point;

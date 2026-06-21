@@ -49,7 +49,7 @@ public class AuthService {
                 .build();
 
         Point savedPoint = Point.builder()
-                .point(0)
+                .point(0L)
                 .member(savedMember)
                 .build();
         memberRepository.save(savedMember);

@@ -9,7 +9,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -23,5 +27,10 @@ public class ChatMessageController {
         ChatMessageResponse response = chatMessageService.sendMessage(request);
         messagingTemplate.convertAndSend("/sub/chat/room" + request.getRoomId(), response);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/api/v1/chat-messages/{roomId}")
+    public ResponseEntity<List<ChatMessageResponse>> getChatMessages(@PathVariable Long roomId) {
+        return ResponseEntity.ok(chatMessageService.getChatMessages(roomId));
     }
 }

@@ -8,6 +8,8 @@ import com.example.bidly.domain.bid.entity.Bid;
 import com.example.bidly.domain.bid.repository.BidRepository;
 import com.example.bidly.domain.member.entity.Member;
 import com.example.bidly.domain.member.repository.MemberRepository;
+import com.example.bidly.domain.notification.enums.NotificationType;
+import com.example.bidly.domain.notification.event.NotificationEvent;
 import com.example.bidly.domain.point.entity.Point;
 import com.example.bidly.domain.point.entity.PointHistory;
 import com.example.bidly.domain.point.enums.PointType;
@@ -16,6 +18,7 @@ import com.example.bidly.domain.point.repository.PointRepository;
 import com.example.bidly.global.entity.Auth;
 import com.example.bidly.global.exception.ServerException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
@@ -32,6 +35,7 @@ public class BidService {
     private final PointRepository pointRepository;
     private final PointHistoryRepository pointHistoryRepository;
     private final MemberRepository memberRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Retryable(retryFor = OptimisticLockingFailureException.class)
     @Transactional
@@ -66,6 +70,12 @@ public class BidService {
 
         findAuction.changeCurrentPrice(request.getBidPrice());
         findAuction.plusBidCount();
+
+        eventPublisher.publishEvent(new NotificationEvent(
+                findAuction.getProduct().getSeller().getId(),
+                NotificationType.BID_RECEIVED,
+                findAuction.getProduct().getTitle() + "에 새로운 입찰이 들어왔습니다."
+        ));
         return BidResponse.of(savedBid);
     }
 
@@ -83,6 +93,11 @@ public class BidService {
                             .point(prevPoint)
                             .build();
                     pointHistoryRepository.save(savedPointHistory);
+                    eventPublisher.publishEvent(new NotificationEvent(
+                            prevBid.getBidder().getId(),
+                            NotificationType.BID_FAILED,
+                            "더 높은 입찰가가 들어와 입찰이 취소됐습니다."
+                    ));
                 });
     }
 

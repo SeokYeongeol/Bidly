@@ -2,6 +2,7 @@ package com.example.bidly.domain.chatroom.entity;
 
 import com.example.bidly.domain.member.entity.Member;
 import com.example.bidly.domain.product.entity.Product;
+import com.example.bidly.global.entity.TimeStamped;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -11,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
-public class ChatRoom {
+public class ChatRoom extends TimeStamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

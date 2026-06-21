@@ -9,6 +9,10 @@ import static org.springframework.http.HttpStatus.*;
 @Getter
 @RequiredArgsConstructor
 public enum ErrorCode {
+    // 알림
+    NOTIFICATION_NOT_FOUND("해당 알림을 찾을 수 없습니다.", NOT_FOUND),
+    NOTIFICATION_NOT_EQUALS_USER("해당 알림을 받은 유저가 아닙니다.", FORBIDDEN),
+
     // 채팅
     CANNOT_CHAT_WITH_SELF("채팅 대상이 자기 자신일 수 없습니다.", BAD_REQUEST),
     CHAT_ROOM_NOT_FOUND("해당 채팅방을 찾을 수 없습니다.", NOT_FOUND),
@@ -34,6 +38,7 @@ public enum ErrorCode {
 
     // 경매
     AUCTION_NOT_FOUND("해당 경매를 찾을 수 없습니다.", NOT_FOUND),
+    AUCTION_ALREADY_CLOSED("경매가 이미 닫힌 상태입니다.", NOT_FOUND),
 
     // 상품
     PRODUCT_NOT_FOUND("해당 상품를 찾을 수 없습니다.", NOT_FOUND),

@@ -18,4 +18,6 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
     Page<Auction> findAllByProductStatus(@Param("productStatus") ProductStatus productStatus, Pageable pageable);
 
     List<Auction> findByEndAtBeforeAndStatus(LocalDateTime endAtBefore, AuctionStatus status);
+
+    List<Auction> findByStatusAndUpdatedAtBefore(AuctionStatus status, LocalDateTime updatedAtBefore);
 }

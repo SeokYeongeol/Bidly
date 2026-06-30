@@ -39,6 +39,7 @@ public enum ErrorCode {
     // 경매
     AUCTION_NOT_FOUND("해당 경매를 찾을 수 없습니다.", NOT_FOUND),
     AUCTION_ALREADY_CLOSED("경매가 이미 닫힌 상태입니다.", NOT_FOUND),
+    CANNOT_CANCEL_AUCTION_WITH_BIDS("입찰자가 있으면 경매를 취소할 수 없습니다.", CONFLICT),
 
     // 상품
     PRODUCT_NOT_FOUND("해당 상품를 찾을 수 없습니다.", NOT_FOUND),
@@ -46,6 +47,7 @@ public enum ErrorCode {
     INPUT_START_PRICE("해당 상품의 시작 금액을 입력해주세요.", BAD_REQUEST),
     INPUT_DURATION("해당 상품의 경매 기간을 입력해주세요.", BAD_REQUEST),
     INPUT_PRICE("해당 상품의 가격을 입력해주세요.", BAD_REQUEST),
+    NOT_PRODUCT_SELLER("해당 물건의 판매자가 아닙니다.", CONFLICT),
 
     // 유저
     USER_NOT_FOUND("해당 사람을 찾을 수 없습니다.", NOT_FOUND),

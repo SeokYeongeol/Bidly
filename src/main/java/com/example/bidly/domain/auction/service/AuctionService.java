@@ -10,7 +10,9 @@ import com.example.bidly.domain.notification.enums.NotificationType;
 import com.example.bidly.domain.notification.event.NotificationEvent;
 import com.example.bidly.domain.product.entity.Product;
 import com.example.bidly.domain.product.repository.ProductRepository;
+import com.example.bidly.global.entity.Auth;
 import com.example.bidly.global.exception.ServerException;
+import com.example.bidly.global.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -26,8 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.example.bidly.domain.product.enums.ProductStatus.ON_SALE;
-import static com.example.bidly.domain.product.enums.ProductStatus.SOLD_OUT;
+import static com.example.bidly.domain.product.enums.ProductStatus.*;
 import static com.example.bidly.global.exception.ErrorCode.*;
 
 @Slf4j
@@ -39,6 +40,7 @@ public class AuctionService {
     private final ProductRepository productRepository;
     private final BidRepository bidRepository;
     private final ApplicationEventPublisher eventPublisher;
+    private final S3Service s3Service;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void createAuction(CreateAuctionRequest request) {
@@ -87,6 +89,24 @@ public class AuctionService {
     }
 
     @Transactional
+    public void cancelAuction(Auth auth, Long auctionId) {
+        Auction findAuction = auctionRepository.findById(auctionId)
+                .orElseThrow(() -> new ServerException(AUCTION_NOT_FOUND));
+
+        if (!findAuction.getProduct().isSeller(auth.getId())) {
+            throw new ServerException(NOT_PRODUCT_SELLER);
+        }
+        if (!findAuction.isActive()) {
+            throw new ServerException(AUCTION_ALREADY_CLOSED);
+        }
+        if (bidRepository.existsByAuction(findAuction)) {
+            throw new ServerException(CANNOT_CANCEL_AUCTION_WITH_BIDS);
+        }
+        findAuction.cancel();
+        findAuction.getProduct().delete();
+    }
+
+    @Transactional
     public void closeAuction(Auction auction) {
         auction.close();
 
@@ -117,5 +137,23 @@ public class AuctionService {
                     ));
                     log.info("경매 유찰 처리 완료 - auctionId: {}", auction.getId());
                 });
+    }
+
+    @Transactional
+    public void hardDeleteCancelledAuctions() {
+        LocalDateTime threshold = LocalDateTime.now().minusDays(7);
+
+        List<Auction> targets = auctionRepository
+                .findByStatusAndUpdatedAtBefore(AuctionStatus.CANCEL, threshold);
+
+        for (Auction auction : targets) {
+            Product findProduct = auction.getProduct();
+
+            s3Service.deleteFolder("products/", findProduct.getId());
+
+            auctionRepository.delete(auction);
+            productRepository.delete(findProduct);
+        }
+        log.info("하드 딜리트 완료 - {}건", targets.size());
     }
 }

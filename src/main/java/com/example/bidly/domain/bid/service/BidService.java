@@ -45,6 +45,9 @@ public class BidService {
         Member findMember = memberRepository.findMemberById(auth.getId())
                 .orElseThrow(() -> new ServerException(USER_NOT_FOUND));
 
+        if (!findAuction.isActive()) {
+            throw new ServerException(AUCTION_ALREADY_CLOSED);
+        }
         if (request.getBidPrice() < findAuction.getStartPrice()) {
             throw new ServerException(BID_PRICE_LOWER_START_PRICE);
         }

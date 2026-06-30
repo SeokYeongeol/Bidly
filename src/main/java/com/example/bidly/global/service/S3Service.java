@@ -53,7 +53,7 @@ public class S3Service {
     }
 
     // 폴더 내 전체 이미지 삭제
-    public void deleteFolder(String folder, String id) {
+    public void deleteFolder(String folder, Long id) {
         String prefix = folder + "/" + id + "/";
 
         ListObjectsV2Response response = s3Client.listObjectsV2(

@@ -72,7 +72,7 @@ public class Product extends TimeStamped {
         this.status = status;
     }
 
-    public boolean isSeller(Long sellerId) {
-        return this.seller.getId().equals(sellerId);
-    }
+    public boolean isSeller(Long sellerId) { return this.seller.getId().equals(sellerId); }
+
+    public void delete() { this.status = ProductStatus.DELETED; }
 }

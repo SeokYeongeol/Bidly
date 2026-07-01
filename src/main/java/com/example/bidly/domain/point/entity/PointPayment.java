@@ -2,6 +2,7 @@ package com.example.bidly.domain.point.entity;
 
 import com.example.bidly.domain.member.entity.Member;
 import com.example.bidly.domain.point.enums.PaymentStatus;
+import com.example.bidly.global.entity.TimeStamped;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -11,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class PointPayment {
+public class PointPayment extends TimeStamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

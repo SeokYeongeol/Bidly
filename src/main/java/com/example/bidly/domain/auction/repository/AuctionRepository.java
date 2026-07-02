@@ -19,5 +19,5 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
 
     List<Auction> findByEndAtBeforeAndStatus(LocalDateTime endAtBefore, AuctionStatus status);
 
-    List<Auction> findByStatusAndUpdatedAtBefore(AuctionStatus status, LocalDateTime updatedAtBefore);
+    List<Auction> findByStatusAndUpdatedAtBefore(AuctionStatus status, java.time.LocalDateTime updatedAtBefore);
 }

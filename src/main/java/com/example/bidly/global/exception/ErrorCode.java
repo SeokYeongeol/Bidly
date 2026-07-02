@@ -9,6 +9,12 @@ import static org.springframework.http.HttpStatus.*;
 @Getter
 @RequiredArgsConstructor
 public enum ErrorCode {
+    // 이메일 인증
+    EMAIL_VERIFICATION_NOT_FOUND("인증 코드를 먼저 요청해주세요.", BAD_REQUEST),
+    EMAIL_VERIFICATION_EXPIRED("인증 코드가 만료됐어요. 다시 요청해주세요.", BAD_REQUEST),
+    EMAIL_VERIFICATION_INVALID_CODE("인증 코드가 올바르지 않아요.", BAD_REQUEST),
+    EMAIL_NOT_VERIFIED("이메일 인증이 필요해요.", BAD_REQUEST),
+
     // 알림
     NOTIFICATION_NOT_FOUND("해당 알림을 찾을 수 없습니다.", NOT_FOUND),
     NOTIFICATION_NOT_EQUALS_USER("해당 알림을 받은 유저가 아닙니다.", FORBIDDEN),

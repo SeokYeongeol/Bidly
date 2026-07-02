@@ -65,6 +65,9 @@ dependencies {
 
     // 낙관적 락
     implementation 'org.springframework.retry:spring-retry'
+
+    // 이메일 발송
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
 }
 
 tasks.named('test') {

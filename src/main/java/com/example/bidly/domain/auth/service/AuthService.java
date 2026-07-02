@@ -4,6 +4,7 @@ import com.example.bidly.domain.auth.dto.request.LoginRequest;
 import com.example.bidly.domain.auth.dto.request.SignUpRequest;
 import com.example.bidly.domain.auth.dto.response.AuthResponse;
 import com.example.bidly.domain.member.entity.Member;
+import com.example.bidly.domain.member.repository.EmailVerificationRepository;
 import com.example.bidly.domain.member.repository.MemberRepository;
 import com.example.bidly.domain.member.role.MemberRole;
 import com.example.bidly.domain.point.entity.Point;
@@ -26,9 +27,14 @@ public class AuthService {
     private final PointRepository pointRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final EmailVerificationService emailVerificationService;
+    private final EmailVerificationRepository emailVerificationRepository;
 
     @Transactional
     public AuthResponse signUp(SignUpRequest request) {
+        // 이메일 인증 여부 확인
+        emailVerificationService.checkVerified(request.getEmail());
+
         if (!request.validRePassword()) {
             throw new ServerException(INVALID_PASSWORD);
         }
@@ -60,6 +66,7 @@ public class AuthService {
                 savedMember.getEmail(),
                 savedMember.getRole()
         );
+        emailVerificationRepository.deleteByEmail(request.getEmail());
         return new AuthResponse(accessToken);
     }
 

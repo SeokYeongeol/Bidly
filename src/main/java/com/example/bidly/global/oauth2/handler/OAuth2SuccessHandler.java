@@ -34,9 +34,14 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow();
+        String accessToken = jwtUtil.createAccessToken(member.getId(), member.getEmail(), member.getRole()).substring("Bearer ".length());
 
-        String accessToken = jwtUtil.createAccessToken(member.getId(), member.getEmail(), member.getRole());
-        String redirectUrl = "http://localhost:3000/oauth/callback?token=" + accessToken;
+        if (!member.isNameSet()) {
+            String redirectUrl = "http://localhost:5173/oauth/setup?token=" + accessToken;
+            getRedirectStrategy().sendRedirect(request, response, redirectUrl);
+            return;
+        }
+        String redirectUrl = "http://localhost:5173/oauth/callback?token=" + accessToken;
 
         getRedirectStrategy().sendRedirect(request, response, redirectUrl);
     }

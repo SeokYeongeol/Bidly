@@ -32,6 +32,7 @@ public class Member extends TimeStamped {
 
     private String provider;
     private String providerId;
+    private boolean nameSet;
 
     private LocalDateTime deletedAt;
 
@@ -50,12 +51,20 @@ public class Member extends TimeStamped {
         this.role = role;
         this.provider = provider;
         this.providerId = providerId;
+        this.nameSet = false;
     }
 
     public void changePassword(String password) { this.password = password; }
+
     public void deleteMember() { this.deletedAt = LocalDateTime.now(); }
+
     public Member updateName(String name) {
         this.name = name;
         return this;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+        this.nameSet = true;
     }
 }

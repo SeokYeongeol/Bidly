@@ -15,6 +15,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -44,16 +45,27 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
     // 최초 로그인이면 저장, 기존 회원이면 업데이트
     private Member saveOrUpdate(OAuthAttributes attributes) {
-        Member member = memberRepository.findByEmail(attributes.getEmail())
-                .map(m -> m.updateName(attributes.getName()))
-                .orElse(Member.builder()
-                        .email(attributes.getEmail())
-                        .name(attributes.getName())
-                        .provider(attributes.getProvider())
-                        .providerId(attributes.getProviderId())
-                        .role(MemberRole.ROLE_MEMBER)
-                        .build());
+        return memberRepository.findByEmail(attributes.getEmail())
+                .orElseGet(() -> {
+                    // 임시 닉네임 생성 (중복 없을 때 까지)
+                    String tempName = generateTempName();
 
-        return memberRepository.save(member);
+                    return memberRepository.save(Member.builder()
+                            .email(attributes.getEmail())
+                            .name(tempName)
+                            .provider(attributes.getProvider())
+                            .providerId(attributes.getProviderId())
+                            .role(MemberRole.ROLE_MEMBER)
+                            .build());
+                });
+    }
+
+    // 임시 닉네임 생성 메소드
+    private String generateTempName() {
+        String tempName;
+        do {
+            tempName = "U" + UUID.randomUUID().toString().replace("-", "").substring(0, 9);
+        } while (memberRepository.existsByName(tempName));
+        return tempName;
     }
 }

@@ -2,6 +2,7 @@ package com.example.bidly.domain.member.service;
 
 import com.example.bidly.domain.member.dto.request.ChangePasswordRequest;
 import com.example.bidly.domain.member.dto.request.DeleteMemberRequest;
+import com.example.bidly.domain.member.dto.request.NameSetRequest;
 import com.example.bidly.domain.member.entity.Member;
 import com.example.bidly.domain.member.repository.MemberRepository;
 import com.example.bidly.global.entity.Auth;
@@ -29,6 +30,7 @@ public class MemberService {
         matchPassword(request.getOldPassword(), findMember.getPassword());
 
         findMember.changePassword(passwordEncoder.encode(request.getNewPassword()));
+        memberRepository.save(findMember);
     }
 
     @Transactional
@@ -37,6 +39,16 @@ public class MemberService {
         matchPassword(request.getPassword(), findMember.getPassword());
 
         findMember.deleteMember();
+    }
+
+    @Transactional
+    public void setName(Auth auth, NameSetRequest request) {
+        Member findMember = getMember(auth.getId());
+        if (memberRepository.existsByName(request.getName())) {
+            throw new ServerException(USER_NAME_DUPLICATION);
+        }
+        findMember.setName(request.getName());
+        memberRepository.save(findMember);
     }
 
     /**

@@ -3,6 +3,7 @@ package com.example.bidly.domain.member.service;
 import com.example.bidly.domain.member.dto.request.ChangePasswordRequest;
 import com.example.bidly.domain.member.dto.request.DeleteMemberRequest;
 import com.example.bidly.domain.member.dto.request.NameSetRequest;
+import com.example.bidly.domain.member.dto.request.UpdateNameRequest;
 import com.example.bidly.domain.member.entity.Member;
 import com.example.bidly.domain.member.repository.MemberRepository;
 import com.example.bidly.global.entity.Auth;

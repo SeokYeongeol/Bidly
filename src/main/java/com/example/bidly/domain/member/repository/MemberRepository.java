@@ -1,6 +1,7 @@
 package com.example.bidly.domain.member.repository;
 
 import com.example.bidly.domain.member.entity.Member;
+import com.example.bidly.domain.member.role.MemberRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

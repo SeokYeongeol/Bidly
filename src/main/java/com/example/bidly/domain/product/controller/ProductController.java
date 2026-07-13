@@ -2,6 +2,8 @@ package com.example.bidly.domain.product.controller;
 
 import com.example.bidly.domain.product.dto.request.CreateProductRequest;
 import com.example.bidly.domain.product.dto.response.ProductResponse;
+import com.example.bidly.domain.product.enums.ProductCategory;
+import com.example.bidly.domain.product.enums.TradeType;
 import com.example.bidly.domain.product.service.ProductService;
 import com.example.bidly.global.entity.Auth;
 import jakarta.validation.Valid;
@@ -22,7 +24,7 @@ public class ProductController {
 
     private final ProductService productService;
 
-    @PostMapping(value = "/v1/products", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/v1/products/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ProductResponse> createProduct(
             @AuthenticationPrincipal Auth auth,
             @Valid @RequestPart CreateProductRequest request,
@@ -37,7 +39,12 @@ public class ProductController {
     }
 
     @GetMapping("/v1/products")
-    public ResponseEntity<PagedModel<ProductResponse>> findAllProducts(@RequestParam int page) {
-        return ResponseEntity.ok(productService.findAllProducts(page));
+    public ResponseEntity<PagedModel<ProductResponse>> findAllProducts(
+            @RequestParam int page,
+            @RequestParam(required = false) ProductCategory category,
+            @RequestParam(required = false) TradeType tradeType,
+            @RequestParam(required = false) String keyword
+    ) {
+        return ResponseEntity.ok(productService.findAllProducts(page, category, tradeType, keyword));
     }
 }

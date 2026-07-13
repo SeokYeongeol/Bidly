@@ -58,10 +58,7 @@ public class Member extends TimeStamped {
 
     public void deleteMember() { this.deletedAt = LocalDateTime.now(); }
 
-    public Member updateName(String name) {
-        this.name = name;
-        return this;
-    }
+    public void changeRole(MemberRole role) { this.role = role; }
 
     public void setName(String name) {
         this.name = name;

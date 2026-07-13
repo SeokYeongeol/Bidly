@@ -9,6 +9,9 @@ import static org.springframework.http.HttpStatus.*;
 @Getter
 @RequiredArgsConstructor
 public enum ErrorCode {
+    // 어드민
+    DO_NOT_HAVE_PERMISSION("어드민이 아니어서 권한이 없습니다", CONFLICT),
+
     // 이메일 인증
     EMAIL_VERIFICATION_NOT_FOUND("인증 코드를 먼저 요청해주세요.", BAD_REQUEST),
     EMAIL_VERIFICATION_EXPIRED("인증 코드가 만료됐어요. 다시 요청해주세요.", BAD_REQUEST),

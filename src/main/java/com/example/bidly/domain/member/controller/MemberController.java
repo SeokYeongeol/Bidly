@@ -3,6 +3,7 @@ package com.example.bidly.domain.member.controller;
 import com.example.bidly.domain.member.dto.request.ChangePasswordRequest;
 import com.example.bidly.domain.member.dto.request.DeleteMemberRequest;
 import com.example.bidly.domain.member.dto.request.NameSetRequest;
+import com.example.bidly.domain.member.dto.response.MemberResponse;
 import com.example.bidly.domain.member.service.MemberService;
 import com.example.bidly.global.entity.Auth;
 import jakarta.validation.Valid;
@@ -43,5 +44,11 @@ public class MemberController {
     ) {
         memberService.deleteMember(auth, request);
         return ResponseEntity.ok("삭제되었습니다.");
+    }
+
+    @GetMapping("/v1/members/my_page")
+    public ResponseEntity<MemberResponse> getMyPage(@AuthenticationPrincipal Auth auth) {
+//        return ResponseEntity.ok(memberService.getMyPage(auth));
+        return null;
     }
 }

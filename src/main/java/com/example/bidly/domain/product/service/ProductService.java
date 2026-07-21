@@ -5,8 +5,8 @@ import com.example.bidly.domain.member.repository.MemberRepository;
 import com.example.bidly.domain.product.dto.request.CreateProductRequest;
 import com.example.bidly.domain.product.dto.response.ProductResponse;
 import com.example.bidly.domain.product.entity.Product;
+import com.example.bidly.domain.product.enums.CategoryGroup;
 import com.example.bidly.domain.product.enums.ProductCategory;
-import com.example.bidly.domain.product.enums.ProductStatus;
 import com.example.bidly.domain.product.enums.TradeType;
 import com.example.bidly.domain.product.event.ProductCreatedEvent;
 import com.example.bidly.domain.product.repository.ProductRepository;
@@ -97,13 +97,31 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public PagedModel<ProductResponse> findAllProducts(int page, ProductCategory category, TradeType tradeType, String keyword) {
+    public PagedModel<ProductResponse> findAllProducts(int page, String categoryGroup, TradeType tradeType, String keyword) {
         Pageable pageable = PageRequest.of(page, 10,
                 Sort.by(Sort.Direction.DESC, "createdAt"));
 
+        List<ProductCategory> categories = null;
+        if (categoryGroup != null && !categoryGroup.isEmpty()) {
+            try {
+                categories = CategoryGroup.valueOf(categoryGroup).getCategories();
+            } catch (IllegalArgumentException iae) {
+                throw new ServerException(CATEGORY_IS_NULL);
+            }
+        }
+
         Page<Product> products = productRepository.productSearch(
-                category, tradeType, ON_SALE, keyword, pageable
+                categories, tradeType, ON_SALE, keyword, pageable
         );
         return new PagedModel<>(products.map(ProductResponse::of));
+    }
+
+    @Transactional(readOnly = true)
+    public PagedModel<ProductResponse> findMyProducts(Auth auth, int page) {
+        Pageable pageable = PageRequest.of(page, 10,
+                Sort.by(Sort.Direction.DESC, "createdAt"));
+
+        Page<Product> myProducts = productRepository.findMyProducts(auth.getId(), pageable);
+        return new PagedModel<>(myProducts.map(ProductResponse::of));
     }
 }

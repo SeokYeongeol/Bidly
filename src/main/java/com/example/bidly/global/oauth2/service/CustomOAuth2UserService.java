@@ -1,10 +1,12 @@
 package com.example.bidly.global.oauth2.service;
 
 import com.example.bidly.domain.member.entity.Member;
+import com.example.bidly.domain.member.event.MemberCreatedEvent;
 import com.example.bidly.domain.member.repository.MemberRepository;
 import com.example.bidly.domain.member.role.MemberRole;
 import com.example.bidly.global.oauth2.attribute.OAuthAttributes;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -13,6 +15,7 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.UUID;
@@ -22,8 +25,10 @@ import java.util.UUID;
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     private final MemberRepository memberRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
+    @Transactional
     public OAuth2User loadUser(OAuth2UserRequest request) throws OAuth2AuthenticationException {
         OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
         OAuth2User oAuth2User = delegate.loadUser(request);
@@ -50,13 +55,15 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
                     // 임시 닉네임 생성 (중복 없을 때 까지)
                     String tempName = generateTempName();
 
-                    return memberRepository.save(Member.builder()
+                    Member savedMember = memberRepository.save(Member.builder()
                             .email(attributes.getEmail())
                             .name(tempName)
                             .provider(attributes.getProvider())
                             .providerId(attributes.getProviderId())
                             .role(MemberRole.ROLE_MEMBER)
                             .build());
+                    eventPublisher.publishEvent(new MemberCreatedEvent(savedMember.getId()));
+                    return savedMember;
                 });
     }
 

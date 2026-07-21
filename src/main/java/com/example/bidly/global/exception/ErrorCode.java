@@ -57,6 +57,7 @@ public enum ErrorCode {
     INPUT_DURATION("해당 상품의 경매 기간을 입력해주세요.", BAD_REQUEST),
     INPUT_PRICE("해당 상품의 가격을 입력해주세요.", BAD_REQUEST),
     NOT_PRODUCT_SELLER("해당 물건의 판매자가 아닙니다.", CONFLICT),
+    CATEGORY_IS_NULL("해당 카테고리가 없습니다.", NOT_FOUND),
 
     // 유저
     USER_NOT_FOUND("해당 사람을 찾을 수 없습니다.", NOT_FOUND),

@@ -4,13 +4,13 @@ import com.example.bidly.domain.auth.dto.request.LoginRequest;
 import com.example.bidly.domain.auth.dto.request.SignUpRequest;
 import com.example.bidly.domain.auth.dto.response.AuthResponse;
 import com.example.bidly.domain.member.entity.Member;
+import com.example.bidly.domain.member.event.MemberCreatedEvent;
 import com.example.bidly.domain.member.repository.EmailVerificationRepository;
 import com.example.bidly.domain.member.repository.MemberRepository;
 import com.example.bidly.domain.member.role.MemberRole;
-import com.example.bidly.domain.point.entity.Point;
-import com.example.bidly.domain.point.repository.PointRepository;
 import com.example.bidly.global.exception.ServerException;
 import com.example.bidly.global.util.JwtUtil;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,14 +24,14 @@ import static com.example.bidly.global.exception.ErrorCode.*;
 public class AuthService {
 
     private final MemberRepository memberRepository;
-    private final PointRepository pointRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final EmailVerificationService emailVerificationService;
     private final EmailVerificationRepository emailVerificationRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
-    public AuthResponse signUp(SignUpRequest request) {
+    public void signUp(SignUpRequest request) {
         // 이메일 인증 여부 확인
         emailVerificationService.checkVerified(request.getEmail());
 
@@ -53,21 +53,11 @@ public class AuthService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(MemberRole.of(String.valueOf(ROLE_MEMBER)))
                 .build();
-
-        Point savedPoint = Point.builder()
-                .point(0L)
-                .member(savedMember)
-                .build();
         memberRepository.save(savedMember);
-        pointRepository.save(savedPoint);
 
-        String accessToken = jwtUtil.createAccessToken(
-                savedMember.getId(),
-                savedMember.getEmail(),
-                savedMember.getRole()
-        );
+        eventPublisher.publishEvent(new MemberCreatedEvent(savedMember.getId()));
+
         emailVerificationRepository.deleteByEmail(request.getEmail());
-        return new AuthResponse(accessToken);
     }
 
     @Transactional

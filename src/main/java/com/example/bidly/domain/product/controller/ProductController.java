@@ -2,7 +2,6 @@ package com.example.bidly.domain.product.controller;
 
 import com.example.bidly.domain.product.dto.request.CreateProductRequest;
 import com.example.bidly.domain.product.dto.response.ProductResponse;
-import com.example.bidly.domain.product.enums.ProductCategory;
 import com.example.bidly.domain.product.enums.TradeType;
 import com.example.bidly.domain.product.service.ProductService;
 import com.example.bidly.global.entity.Auth;
@@ -41,10 +40,18 @@ public class ProductController {
     @GetMapping("/v1/products")
     public ResponseEntity<PagedModel<ProductResponse>> findAllProducts(
             @RequestParam int page,
-            @RequestParam(required = false) ProductCategory category,
+            @RequestParam(required = false) String categoryGroup,
             @RequestParam(required = false) TradeType tradeType,
             @RequestParam(required = false) String keyword
     ) {
-        return ResponseEntity.ok(productService.findAllProducts(page, category, tradeType, keyword));
+        return ResponseEntity.ok(productService.findAllProducts(page, categoryGroup, tradeType, keyword));
+    }
+
+    @GetMapping("/v1/products/my")
+    public ResponseEntity<PagedModel<ProductResponse>> findMyProducts(
+            @AuthenticationPrincipal Auth auth,
+            @RequestParam int page
+    ) {
+        return ResponseEntity.ok(productService.findMyProducts(auth, page));
     }
 }

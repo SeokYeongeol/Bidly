@@ -7,6 +7,7 @@ import com.example.bidly.domain.auth.dto.request.SignUpRequest;
 import com.example.bidly.domain.auth.dto.response.AuthResponse;
 import com.example.bidly.domain.auth.service.AuthService;
 import com.example.bidly.domain.auth.service.EmailVerificationService;
+import com.example.bidly.domain.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +25,9 @@ public class AuthController {
     private final EmailVerificationService emailVerificationService;
 
     @PostMapping("/v1/auth/signup")
-    public ResponseEntity<AuthResponse> signUp(@Valid @RequestBody SignUpRequest request) {
-        return ResponseEntity.ok(authService.signUp(request));
+    public ResponseEntity<Void> signUp(@Valid @RequestBody SignUpRequest request) {
+        authService.signUp(request);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/v1/auth/login")
